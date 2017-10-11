@@ -4,14 +4,18 @@ package learn;
 import org.telegram.telegrambots.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.User;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,6 +67,23 @@ public class MyBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+            if (update.getMessage().getNewChatMembers() != null){
+                try {
+                    User me = getMe();
+                    for (User user:update.getMessage().getNewChatMembers()) {
+                        if (user.getId().equals(me.getId())){
+                            SendMessage sendMessage =new  SendMessage();
+                            sendMessage.setText("بسیار خوش آمدم");
+                            sendMessage.setChatId(update.getMessage().getChatId());
+                            sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
+                            sendMessage(sendMessage);
+
+                        }
+                    }
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         else if (update.hasCallbackQuery()){
             String data = update.getCallbackQuery().getData();
@@ -76,6 +97,66 @@ public class MyBot extends TelegramLongPollingBot {
                     deleteMessage(deleteMessage);
                     AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
                     answerCallbackQuery.setText("دلیت شد");
+                    answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+                    answerCallbackQuery(answerCallbackQuery);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (data.startsWith("id")){
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setReplyToMessageId(update.getCallbackQuery().getMessage().getMessageId());
+                sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+                sendMessage.setText(data.substring("id".length()));
+                try {
+                    sendMessage(sendMessage);
+                    AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+                    answerCallbackQuery.setText("آیدی فرستاده شد");
+                    answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+                    answerCallbackQuery(answerCallbackQuery);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }else if (data.startsWith("username")){
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setReplyToMessageId(update.getCallbackQuery().getMessage().getMessageId());
+                sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+                sendMessage.setText("@" + data.substring("username".length()));
+                try {
+                    sendMessage(sendMessage);
+                    AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+                    answerCallbackQuery.setText("آیدی فرستاده شد");
+                    answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+                    answerCallbackQuery(answerCallbackQuery);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (data.startsWith("firstname")){
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setReplyToMessageId(update.getCallbackQuery().getMessage().getMessageId());
+                sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+                sendMessage.setText(data.substring("firstname".length()));
+                try {
+                    sendMessage(sendMessage);
+                    AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+                    answerCallbackQuery.setText("آیدی فرستاده شد");
+                    answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+                    answerCallbackQuery(answerCallbackQuery);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (data.startsWith("date")){
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setReplyToMessageId(update.getCallbackQuery().getMessage().getMessageId());
+                sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+                Date date = new Date(Long.valueOf(data.substring("date".length())));
+                sendMessage.setText(date.toLocaleString());
+                try {
+                    sendMessage(sendMessage);
+                    AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+                    answerCallbackQuery.setText("آیدی فرستاده شد");
                     answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
                     answerCallbackQuery(answerCallbackQuery);
                 } catch (TelegramApiException e) {
