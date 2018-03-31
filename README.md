@@ -1,2 +1,4 @@
 # java-bot
-this is a tuturial and free for all
+this telegram bot understand forwarded message and create some options for you .
+
+http://hamiss.ir
